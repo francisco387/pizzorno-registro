@@ -283,10 +283,7 @@
         <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
         <p>Canelones, Uruguay</p>
       </div>
-      <div class="banner">
-        <h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2>
-        <small>El premio se retira en City Winery</small>
-      </div>
+      <div class="banner" id="banner"></div>
       <div class="f"><label>Nombre</label><input type="text" id="nom" placeholder="Juan" autocomplete="given-name"></div>
       <div class="f"><label>Apellido</label><input type="text" id="ape" placeholder="García" autocomplete="family-name"></div>
       <div class="f"><label>Correo electrónico</label><input type="email" id="mail" placeholder="juan@ejemplo.com" autocomplete="email"></div>
@@ -310,13 +307,20 @@
   </div>
 
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxuvrlQClxEWoT1KIAlwdVo-tzxc3np2bACvYwobdJrgEEWt7yVa9SXddkdpVzHEk/exec";
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxuvrlQClxEWoT1KIAlwdVo-tzxc3mp2bACvYwobdJrgEEWt7yVa9SXddkdpVzHEk/exec";
     var paisSeleccionado = "";
 
     document.getElementById("nac").max = new Date().toISOString().split("T")[0];
 
+    var banners = {
+      "Uruguay": "<h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
+      "Brasil":  "<h2>Ganaté un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código PIZZORNO10 para usar en Grand Cru</small>",
+      "Otro":    "<h2>Accedé a beneficios exclusivos<br>en nuestra tienda online</h2><small>Te enviamos tu voucher PIZZORNO-VIP para usar en pizzornowines.com</small>"
+    };
+
     function seleccionarPais(pais) {
       paisSeleccionado = pais;
+      document.getElementById("banner").innerHTML = banners[pais] || banners["Otro"];
       document.getElementById("screen-pais").style.display = "none";
       document.getElementById("screen-form").style.display = "block";
       window.scrollTo(0, 0);
