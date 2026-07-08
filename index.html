@@ -4,24 +4,117 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
   <title>Restaurante Pizzorno</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: #ffffff; }
-    body { min-height: 100vh; font-family: "Cormorant Garamond", Georgia, serif; display: flex; flex-direction: column; background: #ffffff; }
-    .page { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 440px; margin: 0 auto; padding: 36px 20px 0; }
+    html, body { height: 100%; }
+    body { min-height: 100vh; font-family: "Cormorant Garamond", Georgia, serif; }
+
+    #screen-pais {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #0d0d0d;
+      padding: 0 24px 56px;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 52px 0 36px;
+      width: 100%;
+    }
+    .hero-logo {
+      width: 200px;
+      max-width: 65%;
+      filter: brightness(0) invert(1);
+      opacity: 0.88;
+      margin-bottom: 14px;
+    }
+    .hero-sub {
+      font-size: 10px;
+      color: #888;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-divider {
+      width: 48px;
+      height: 1px;
+      background: #c9a84c;
+      margin: 0 auto 24px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 300;
+      color: #c9a84c;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .hero-italic {
+      font-size: 16px;
+      font-style: italic;
+      font-weight: 300;
+      color: #999;
+      line-height: 1.6;
+    }
+    .pais-question {
+      font-size: 10px;
+      color: #666;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 0 0 18px;
+    }
+    .pais-cards {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+    .pais-card {
+      display: flex;
+      align-items: center;
+      background: #181818;
+      border: 1px solid #2c2c2c;
+      border-radius: 4px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      gap: 16px;
+      width: 100%;
+      text-align: left;
+    }
+    .pais-card:active { background: #1f1f1f; border-color: #c9a84c; }
+    .pais-card .flag { font-size: 26px; line-height: 1; }
+    .pais-card .name { flex: 1; font-size: 20px; font-weight: 300; color: #ddd; letter-spacing: 0.3px; }
+    .pais-card .arrow { color: #555; font-size: 20px; font-weight: 300; }
+
+    #screen-form { display: none; background: #ffffff; min-height: 100vh; }
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 36px 20px 0;
+      min-height: 100vh;
+    }
     .logo { text-align: center; margin-bottom: 24px; }
-    .logo img { width: 210px; max-width: 70%; display: block; margin: 0 auto; filter: brightness(0); opacity: 0.85; }
+    .logo img { width: 190px; max-width: 68%; display: block; margin: 0 auto; filter: brightness(0); opacity: 0.85; }
     .logo p { font-size: 10px; color: #888; letter-spacing: 3.5px; text-transform: uppercase; margin-top: 10px; }
     .banner { background: #faf7f2; border: 1px solid #c9a84c; border-radius: 3px; padding: 18px 20px; text-align: center; margin-bottom: 20px; }
     .banner h2 { color: #1a1a1a; font-size: 17px; font-weight: 300; line-height: 1.45; }
     .banner small { display: block; color: #888; font-size: 12px; margin-top: 6px; letter-spacing: 0.5px; }
     .f { margin-bottom: 12px; }
     .f label { display: block; font-size: 9.5px; color: #1a1a1a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 5px; }
-    .f input, .f select { display: block; width: 100%; background: #ffffff; border: 1px solid #ccc; border-radius: 2px; color: #111; font-family: inherit; font-size: 16px; padding: 13px 15px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
-    .f input:focus, .f select:focus { border-color: #c9a84c; }
+    .f input { display: block; width: 100%; background: #ffffff; border: 1px solid #ccc; border-radius: 2px; color: #111; font-family: inherit; font-size: 16px; padding: 13px 15px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+    .f input:focus { border-color: #c9a84c; }
     .f input::placeholder { color: #bbb; }
-    .f select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; }
     .ck { display: flex; align-items: flex-start; gap: 13px; margin: 8px 0 18px; }
     .ck input[type="checkbox"] { width: 20px; height: 20px; min-width: 20px; margin-top: 2px; accent-color: #c9a84c; cursor: pointer; }
     .ck label { font-size: 13px; color: #333; line-height: 1.55; cursor: pointer; }
@@ -31,101 +124,128 @@
     .spacer { flex: 1; min-height: 24px; }
     .foot { padding: 22px 0 30px; text-align: center; }
     .foot p { font-size: 9.5px; color: #bbb; letter-spacing: 2.5px; text-transform: uppercase; }
-    #thanks { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
-    #thanks img { width: 170px; max-width: 62%; filter: brightness(0); opacity: 0.7; margin-bottom: 30px; }
-    #thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 14px; }
-    #thanks p { color: #444; font-size: 15px; line-height: 1.7; }
+
+    #screen-thanks { display: none; min-height: 100vh; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
+    #screen-thanks img { width: 170px; max-width: 62%; filter: brightness(0); opacity: 0.7; margin-bottom: 30px; }
+    #screen-thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 14px; }
+    #screen-thanks p { color: #444; font-size: 15px; line-height: 1.7; }
+
     .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="page" id="form-page">
-    <div class="logo">
-      <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
-      <p>Canelones, Uruguay</p>
+
+  <div id="screen-pais">
+    <div class="hero">
+      <img class="hero-logo" src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
+      <p class="hero-sub">Canelones &middot; Uruguay</p>
+      <div class="hero-divider"></div>
+      <h1>Wine Club</h1>
+      <p class="hero-italic">Formá parte de nuestra comunidad<br>y obtené beneficios exclusivos</p>
     </div>
-    <div class="banner">
-      <h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2>
-      <small>El premio se retira en City Winery</small>
+    <p class="pais-question">¿De qué país sos?</p>
+    <div class="pais-cards">
+      <button class="pais-card" onclick="seleccionarPais('Uruguay')">
+        <span class="flag">🇺🇾</span>
+        <span class="name">Uruguay</span>
+        <span class="arrow">›</span>
+      </button>
+      <button class="pais-card" onclick="seleccionarPais('Brasil')">
+        <span class="flag">🇧🇷</span>
+        <span class="name">Brasil</span>
+        <span class="arrow">›</span>
+      </button>
+      <button class="pais-card" onclick="seleccionarPais('Otro')">
+        <span class="flag">🌍</span>
+        <span class="name">Otro país</span>
+        <span class="arrow">›</span>
+      </button>
     </div>
-    <div class="f"><label>Nombre</label><input type="text" id="nom" placeholder="Juan" autocomplete="given-name"></div>
-    <div class="f"><label>Apellido</label><input type="text" id="ape" placeholder="García" autocomplete="family-name"></div>
-    <div class="f"><label>Correo electrónico</label><input type="email" id="mail" placeholder="juan@ejemplo.com" autocomplete="email"></div>
-    <div class="f"><label>Teléfono</label><input type="tel" id="tel" placeholder="099 000 000" autocomplete="tel"></div>
-    <div class="f">
-      <label>País</label>
-      <select id="pais">
-        <option value="" disabled selected>Seleccioná tu país</option>
-        <option value="Uruguay">Uruguay</option>
-        <option value="Brasil">Brasil</option>
-        <option value="Argentina">Argentina</option>
-        <option value="Chile">Chile</option>
-        <option value="Paraguay">Paraguay</option>
-        <option value="Bolivia">Bolivia</option>
-        <option value="Perú">Perú</option>
-        <option value="Colombia">Colombia</option>
-        <option value="Venezuela">Venezuela</option>
-        <option value="Ecuador">Ecuador</option>
-        <option value="México">México</option>
-        <option value="España">España</option>
-        <option value="Estados Unidos">Estados Unidos</option>
-        <option value="Canadá">Canadá</option>
-        <option value="Reino Unido">Reino Unido</option>
-        <option value="Otro">Otro</option>
-      </select>
-    </div>
-    <div class="f"><label>Fecha de cumpleaños</label><input type="date" id="nac"></div>
-    <div class="ck">
-      <input type="checkbox" id="ac">
-      <label for="ac">Acepto recibir comunicaciones de Restaurante Pizzorno y participar en el sorteo mensual.</label>
-    </div>
-    <button id="btn" disabled>Registrarme</button>
-    <div class="spacer"></div>
-    <div class="foot"><p>Restaurante Pizzorno &middot; Canelones, Uruguay</p></div>
   </div>
-  <div id="thanks">
+
+  <div id="screen-form">
+    <div class="page">
+      <div class="logo">
+        <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
+        <p>Canelones, Uruguay</p>
+      </div>
+      <div class="banner">
+        <h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2>
+        <small>El premio se retira en City Winery</small>
+      </div>
+      <div class="f"><label>Nombre</label><input type="text" id="nom" placeholder="Juan" autocomplete="given-name"></div>
+      <div class="f"><label>Apellido</label><input type="text" id="ape" placeholder="García" autocomplete="family-name"></div>
+      <div class="f"><label>Correo electrónico</label><input type="email" id="mail" placeholder="juan@ejemplo.com" autocomplete="email"></div>
+      <div class="f"><label>Teléfono</label><input type="tel" id="tel" placeholder="099 000 000" autocomplete="tel"></div>
+      <div class="f"><label>Fecha de cumpleaños</label><input type="date" id="nac"></div>
+      <div class="ck">
+        <input type="checkbox" id="ac">
+        <label for="ac">Acepto recibir comunicaciones de Restaurante Pizzorno y participar en el sorteo mensual.</label>
+      </div>
+      <button id="btn" disabled>Registrarme</button>
+      <div class="spacer"></div>
+      <div class="foot"><p>Restaurante Pizzorno &middot; Canelones, Uruguay</p></div>
+    </div>
+  </div>
+
+  <div id="screen-thanks">
     <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
     <h2>¡Gracias!</h2>
     <p>Tu registro fue exitoso.<br>Ya estás participando del sorteo mensual.</p>
   </div>
+
   <script>
     var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxuvrlQClxEWoT1KIAlwdVo-tzxc3np2bACvYwobdJrgEEWt7yVa9SXddkdpVzHEk/exec";
+    var paisSeleccionado = "";
+
     document.getElementById("nac").max = new Date().toISOString().split("T")[0];
+
+    function seleccionarPais(pais) {
+      paisSeleccionado = pais;
+      document.getElementById("screen-pais").style.display = "none";
+      document.getElementById("screen-form").style.display = "block";
+      window.scrollTo(0, 0);
+    }
+
     function chk() {
       var ok = document.getElementById("nom").value.trim()
             && document.getElementById("ape").value.trim()
             && document.getElementById("mail").checkValidity()
             && document.getElementById("mail").value.trim()
             && document.getElementById("tel").value.trim()
-            && document.getElementById("pais").value
             && document.getElementById("nac").value
             && document.getElementById("ac").checked;
       document.getElementById("btn").disabled = !ok;
     }
-    ["nom","ape","mail","tel","nac"].forEach(function(id){ document.getElementById(id).addEventListener("input", chk); });
-    document.getElementById("pais").addEventListener("change", chk);
+
+    ["nom","ape","mail","tel","nac"].forEach(function(id) {
+      document.getElementById(id).addEventListener("input", chk);
+    });
     document.getElementById("ac").addEventListener("change", chk);
+
     document.getElementById("btn").addEventListener("click", function() {
       var btn = document.getElementById("btn");
       btn.disabled = true;
-      btn.innerHTML = '<span class="spin"></span>Enviando...';
+      btn.innerHTML = '<span class="spin"><\/span>Enviando...';
       var params = new URLSearchParams({
         submit: "1",
-        nombre: document.getElementById("nom").value.trim(),
-        apellido: document.getElementById("ape").value.trim(),
-        email: document.getElementById("mail").value.trim(),
-        telefono: document.getElementById("tel").value.trim(),
-        pais: document.getElementById("pais").value,
+        nombre:     document.getElementById("nom").value.trim(),
+        apellido:   document.getElementById("ape").value.trim(),
+        email:      document.getElementById("mail").value.trim(),
+        telefono:   document.getElementById("tel").value.trim(),
+        pais:       paisSeleccionado,
         nacimiento: document.getElementById("nac").value
       });
       fetch(SCRIPT_URL + "?" + params.toString(), { method: "GET", mode: "no-cors" })
-        .then(function(){ mostrarGracias(); })
-        .catch(function(){ mostrarGracias(); });
+        .then(function() { mostrarGracias(); })
+        .catch(function() { mostrarGracias(); });
     });
+
     function mostrarGracias() {
-      document.getElementById("form-page").style.display = "none";
-      document.getElementById("thanks").style.display = "flex";
+      document.getElementById("screen-form").style.display = "none";
+      var t = document.getElementById("screen-thanks");
+      t.style.display = "flex";
     }
   </script>
 </body>
