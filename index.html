@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>Restaurante Pizzorno</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; background: #0d0d0d; }
+    body { min-height: 100vh; font-family: "Cormorant Garamond", Georgia, serif; display: flex; flex-direction: column; background: #0d0d0d; }
+    .page { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 440px; margin: 0 auto; padding: 36px 20px 0; }
+    .logo { text-align: center; margin-bottom: 24px; }
+    .logo img { width: 210px; max-width: 70%; display: block; margin: 0 auto; filter: brightness(0) invert(1); opacity: 0.88; }
+    .logo p { font-size: 10px; color: #4a4a4a; letter-spacing: 3.5px; text-transform: uppercase; margin-top: 10px; }
+    .banner { background: #111009; border: 1px solid #2a2616; border-radius: 3px; padding: 18px 20px; text-align: center; margin-bottom: 20px; }
+    .banner h2 { color: #c9a84c; font-size: 17px; font-weight: 300; line-height: 1.45; }
+    .banner small { display: block; color: #555; font-size: 12px; margin-top: 6px; }
+    .f { margin-bottom: 12px; }
+    .f label { display: block; font-size: 9.5px; color: #505050; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 5px; }
+    .f input { display: block; width: 100%; background: #141414; border: 1px solid #222; border-radius: 2px; color: #d8d0c4; font-family: inherit; font-size: 16px; padding: 13px 15px; outline: none; -webkit-appearance: none; }
+    .f input:focus { border-color: #c9a84c; }
+    .f input::placeholder { color: #2e2e2e; }
+    .f input[type="date"] { color-scheme: dark; }
+    .ck { display: flex; align-items: flex-start; gap: 13px; margin: 8px 0 18px; }
+    .ck input[type="checkbox"] { width: 20px; height: 20px; min-width: 20px; margin-top: 2px; accent-color: #c9a84c; cursor: pointer; }
+    .ck label { font-size: 13px; color: #5a5a5a; line-height: 1.55; cursor: pointer; }
+    #btn { display: block; width: 100%; background: #c9a84c; border: none; border-radius: 2px; color: #0d0d0d; font-family: inherit; font-size: 11.5px; letter-spacing: 4px; text-transform: uppercase; padding: 17px; cursor: pointer; }
+    #btn:disabled { opacity: 0.18; cursor: not-allowed; }
+    .spacer { flex: 1; min-height: 24px; }
+    .foot { padding: 22px 0 30px; text-align: center; }
+    .foot p { font-size: 9.5px; color: #2a2a2a; letter-spacing: 2.5px; text-transform: uppercase; }
+    #thanks { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
+    #thanks img { width: 170px; max-width: 62%; filter: brightness(0) invert(1); opacity: 0.65; margin-bottom: 30px; }
+    #thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 14px; }
+    #thanks p { color: #666; font-size: 15px; line-height: 1.7; }
+    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid #0d0d0d; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="page" id="form-page">
+    <div class="logo">
+      <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
+      <p>Canelones, Uruguay</p>
+    </div>
+    <div class="banner">
+      <h2>Participá por el sorteo mensual de 6 botellas de vino</h2>
+      <small>El premio se retira en City Winery</small>
+    </div>
+    <div class="f"><label>Nombre</label><input type="text" id="nom" placeholder="Juan" autocomplete="given-name"></div>
+    <div class="f"><label>Apellido</label><input type="text" id="ape" placeholder="García" autocomplete="family-name"></div>
+    <div class="f"><label>Correo electrónico</label><input type="email" id="mail" placeholder="juan@ejemplo.com" autocomplete="email"></div>
+    <div class="f"><label>Teléfono</label><input type="tel" id="tel" placeholder="099 000 000" autocomplete="tel"></div>
+    <div class="f"><label>Fecha de cumpleaños</label><input type="date" id="nac"></div>
+    <div class="ck">
+      <input type="checkbox" id="ac">
+      <label for="ac">Acepto recibir comunicaciones de Restaurante Pizzorno y participar en el sorteo mensual.</label>
+    </div>
+    <button id="btn" disabled>Registrarme</button>
+    <div class="spacer"></div>
+    <div class="foot"><p>Restaurante Pizzorno - Canelones, Uruguay</p></div>
+  </div>
+  <div id="thanks">
+    <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
+    <h2>Gracias!</h2>
+    <p>Tu registro fue exitoso. Ya estas participando del sorteo mensual.</p>
+  </div>
+  <script>
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxxuvrlQClxEWoT1KIAlwdVo-tzxc3np2bACvYwobdJrgEEWt7yVa9SXddkdpVzHEk/exec";
+    document.getElementById("nac").max = new Date().toISOString().split("T")[0];
+    function chk() {
+      var ok = document.getElementById("nom").value.trim() && document.getElementById("ape").value.trim() && document.getElementById("mail").checkValidity() && document.getElementById("mail").value.trim() && document.getElementById("tel").value.trim() && document.getElementById("nac").value && document.getElementById("ac").checked;
+      document.getElementById("btn").disabled = !ok;
+    }
+    ["nom","ape","mail","tel","nac"].forEach(function(id) { document.getElementById(id).addEventListener("input", chk); });
+    document.getElementById("ac").addEventListener("change", chk);
+    document.getElementById("btn").addEventListener("click", function() {
+      var btn = document.getElementById("btn");
+      btn.disabled = true;
+      btn.innerHTML = "Enviando...";
+      var params = new URLSearchParams({ submit: "1", nombre: document.getElementById("nom").value.trim(), apellido: document.getElementById("ape").value.trim(), email: document.getElementById("mail").value.trim(), telefono: document.getElementById("tel").value.trim(), nacimiento: document.getElementById("nac").value });
+      fetch(SCRIPT_URL + "?" + params.toString(), { method: "GET", mode: "no-cors" }).then(function() { mostrarGracias(); }).catch(function() { mostrarGracias(); });
+    });
+    function mostrarGracias() {
+      document.getElementById("form-page").style.display = "none";
+      document.getElementById("thanks").style.display = "flex";
+    }
+  </script>
+</body>
+</html>
