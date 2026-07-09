@@ -151,7 +151,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spin"></span>Enviando...';
 
-      var params = new URLSearchParams({
+      var payload_unused = new URLSearchParams({
         submit: "1",
         nombre:     document.getElementById("nom").value.trim(),
         apellido:   document.getElementById("ape").value.trim(),
@@ -161,7 +161,7 @@
         nacimiento: document.getElementById("nac").value
       });
 
-      fetch(SCRIPT_URL + "?" + params.toString(), { method: "GET", mode: "no-cors" })
+      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({submit:"1",nombre:document.getElementById("nom").value.trim(),apellido:document.getElementById("ape").value.trim(),email:document.getElementById("mail").value.trim(),telefono:document.getElementById("tel").value.trim(),pais:paisSeleccionado,nacimiento:document.getElementById("nac").value}) })
         .then(function() { mostrarGracias(); })
         .catch(function() { mostrarGracias(); });
     });
