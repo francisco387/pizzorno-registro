@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Panel de Control · Pizzorno Wine Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background:#f5f4f1;
+      color:#1a1a1a;
+      font-family:"Cormorant Garamond", Georgia, serif;
+      min-height:100vh;
+    }
+
+    /* ══ LOGIN ══════════════════════════════════════ */
+    #login-screen {
+      display:flex; align-items:center; justify-content:center;
+      min-height:100vh; padding:24px;
+      background:#f5f4f1;
+    }
+    .login-box {
+      width:100%; max-width:360px;
+      background:#ffffff; border:1px solid #e0ddd7;
+      border-radius:3px; padding:52px 40px; text-align:center;
+    }
+    .login-logo {
+      width:200px; margin:0 auto 28px; display:block;
+      filter:brightness(0); opacity:.75;
+    }
+    .login-box h1 {
+      font-family:"Montserrat",sans-serif; font-size:9px; color:#aaa;
+      letter-spacing:4px; text-transform:uppercase; font-weight:400;
+      margin-bottom:36px;
+    }
+    .login-box input {
+      display:block; width:100%;
+      background:#f9f8f6; border:1px solid #e5e2dc; border-radius:2px;
+      color:#333; font-family:"Montserrat",sans-serif; font-size:15px;
+      padding:14px 16px; outline:none; text-align:center; letter-spacing:5px;
+      margin-bottom:14px; transition:border-color .2s;
+    }
+    .login-box input:focus { border-color:#1a1a1a55; }
+    .login-box input::placeholder { letter-spacing:2px; font-size:13px; color:#ccc; }
+    .login-btn {
+      display:block; width:100%;
+      background:#1a1a1a; border:none; border-radius:2px;
+      color:#fff; font-family:"Montserrat",sans-serif; font-size:9px;
+      font-weight:600; letter-spacing:4px; text-transform:uppercase;
+      padding:15px; cursor:pointer; transition:opacity .2s;
+    }
+    .login-btn:hover { opacity:.8; }
+    .login-error {
+      font-size:13px; color:#c0392b; margin-top:14px;
+      font-style:italic; display:none;
+    }
+
+    /* ══ PANEL ══════════════════════════════════════ */
+    #panel { display:none; }
+
+    /* Top bar */
+    .topbar {
+      position:sticky; top:0; z-index:100;
+      background:#ffffff; border-bottom:1px solid #e8e5e0;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 36px; height:62px;
+    }
+    .topbar-brand { display:flex; align-items:center; gap:18px; }
+    .topbar-brand img {
+      height:30px; filter:brightness(0); opacity:.7;
+    }
+    .topbar-sep {
+      width:1px; height:24px; background:#e8e5e0;
+    }
+    .topbar-title {
+      font-family:"Montserrat",sans-serif; font-size:11px; font-weight:500;
+      color:#1a1a1a; letter-spacing:2px; text-transform:uppercase;
+    }
+    .topbar-sub {
+      font-family:"Montserrat",sans-serif; font-size:8px; color:#bbb;
+      letter-spacing:3px; text-transform:uppercase; margin-top:2px;
+    }
+    .topbar-actions { display:flex; gap:10px; align-items:center; }
+    .btn-top {
+      font-family:"Montserrat",sans-serif; font-size:8px; font-weight:500;
+      letter-spacing:3px; text-transform:uppercase; padding:8px 16px;
+      border-radius:2px; cursor:pointer; transition:all .2s; border:none;
+    }
+    .btn-top-gold { background:#1a1a1a; color:#fff; }
+    .btn-top-gold:hover { opacity:.8; }
+    .btn-top-ghost { background:transparent; border:1px solid #d8d4cd; color:#999; }
+    .btn-top-ghost:hover { border-color:#aaa; color:#333; }
+
+    /* Content wrapper */
+    .content { max-width:1120px; margin:0 auto; padding:44px 36px 90px; }
+
+    /* Section labels */
+    .sec-label {
+      font-family:"Montserrat",sans-serif; font-size:8px; font-weight:500;
+      color:#bbb; letter-spacing:4.5px; text-transform:uppercase;
+      margin:44px 0 16px; padding-bottom:10px;
+      border-bottom:1px solid #e8e5e0;
+    }
+    .sec-label:first-child { margin-top:0; }
+
+    /* ── STATS ────── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+    .stat-card {
+      background:#ffffff; border:1px solid #e5e2dc; border-radius:3px;
+      padding:32px 24px; text-align:center;
+      transition:border-color .2s;
+    }
+    .stat-card:hover { border-color:#ccc; }
+    .stat-num {
+      display:block; font-size:58px; font-weight:300;
+      color:#1a1a1a; line-height:1; margin-bottom:14px;
+      font-family:"Cormorant Garamond",serif;
+    }
+    .stat-label {
+      font-family:"Montserrat",sans-serif; font-size:8px;
+      color:#bbb; letter-spacing:3.5px; text-transform:uppercase;
+    }
+
+    /* ── CARD ────── */
+    .card {
+      background:#ffffff; border:1px solid #e5e2dc; border-radius:3px;
+      overflow:hidden;
+    }
+    .card-body { padding:28px 32px; }
+
+    /* ── SISTEMA ────── */
+    .status-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:18px 32px; border-bottom:1px solid #f0ece7;
+      font-size:16px;
+    }
+    .status-row:last-child { border-bottom:none; }
+    .status-row .lbl { color:#bbb; font-style:italic; }
+    .status-row .val { color:#555; font-style:italic; font-size:15px; }
+    .verified {
+      color:#27ae60 !important; font-style:normal !important;
+      font-family:"Montserrat",sans-serif !important;
+      font-size:9px !important; letter-spacing:2.5px; font-weight:600 !important;
+    }
+
+    /* ── PREMIOS ────── */
+    .prizes-body { padding:28px 32px; }
+    .country-head {
+      font-family:"Montserrat",sans-serif; font-size:9px; font-weight:600;
+      color:#1a1a1a; letter-spacing:3px; text-transform:uppercase;
+      margin-bottom:14px;
+    }
+    .field-lbl {
+      font-family:"Montserrat",sans-serif; font-size:8px; color:#bbb;
+      letter-spacing:2.5px; text-transform:uppercase; margin-bottom:7px;
+    }
+    .field-input {
+      display:block; width:100%;
+      background:#f9f8f6; border:1px solid #e5e2dc; border-radius:2px;
+      color:#333; font-family:"Cormorant Garamond",serif; font-size:16px;
+      padding:12px 14px; outline:none; transition:border-color .2s;
+      margin-bottom:14px;
+    }
+    .field-input:focus { border-color:#1a1a1a44; }
+    .prizes-divider { border:none; border-top:1px solid #f0ece7; margin:20px 0; }
+    .btn-save {
+      font-family:"Montserrat",sans-serif; font-size:8px; font-weight:500;
+      letter-spacing:3px; text-transform:uppercase; color:#bbb;
+      background:transparent; border:none; cursor:pointer; padding:0;
+      transition:color .2s;
+    }
+    .btn-save:hover { color:#1a1a1a; }
+    .btn-save.saved { color:#27ae60; }
+
+    /* ── TABLE ────── */
+    .table-wrap {
+      background:#ffffff; border:1px solid #e5e2dc; border-radius:3px;
+      overflow:auto;
+    }
+    .data-table { width:100%; border-collapse:collapse; font-size:14px; }
+    .data-table th {
+      font-family:"Montserrat",sans-serif; font-size:7px; font-weight:500;
+      color:#bbb; letter-spacing:2.5px; text-transform:uppercase;
+      padding:13px 18px; text-align:left;
+      border-bottom:1px solid #e8e5e0; background:#f9f8f6;
+      white-space:nowrap;
+    }
+    .data-table td {
+      padding:14px 18px; border-bottom:1px solid #f0ece7;
+      color:#999; font-style:italic; vertical-align:middle;
+    }
+    .data-table td.nombre { color:#333; font-style:normal; }
+    .data-table td.email-cell { font-size:13px; }
+    .data-table td.pais-uy { color:#1a1a1a; font-family:"Montserrat",sans-serif; font-size:8px; letter-spacing:1px; font-style:normal; }
+    .data-table td.pais-br { color:#27ae60; font-family:"Montserrat",sans-serif; font-size:8px; letter-spacing:1px; font-style:normal; }
+    .data-table td.pais-otro { color:#aaa; font-family:"Montserrat",sans-serif; font-size:8px; letter-spacing:1px; font-style:normal; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table tr:hover td { background:#faf9f7; }
+    .empty-msg td {
+      text-align:center; color:#ccc; font-style:italic;
+      padding:44px !important; font-size:15px;
+    }
+
+    /* ── CAMPAÑA ────── */
+    .camp-header {
+      padding:18px 32px; background:#f9f8f6;
+      border-bottom:1px solid #e8e5e0;
+      font-size:15px; color:#999; font-style:italic;
+    }
+    .camp-header strong { color:#1a1a1a; font-style:normal; }
+    .camp-fields { padding:28px 32px; }
+    .camp-row { margin-bottom:18px; }
+    .camp-lbl {
+      font-family:"Montserrat",sans-serif; font-size:8px; color:#bbb;
+      letter-spacing:2.5px; text-transform:uppercase; margin-bottom:7px;
+    }
+    .camp-input {
+      display:block; width:100%;
+      background:#f9f8f6; border:1px solid #e5e2dc; border-radius:2px;
+      color:#333; font-family:"Cormorant Garamond",serif; font-size:16px;
+      padding:12px 14px; outline:none; transition:border-color .2s;
+    }
+    .camp-input:focus { border-color:#1a1a1a44; }
+    .camp-textarea {
+      display:block; width:100%;
+      background:#f9f8f6; border:1px solid #e5e2dc; border-radius:2px;
+      color:#333; font-family:"Cormorant Garamond",serif; font-size:16px;
+      padding:12px 14px; outline:none; min-height:100px; resize:vertical;
+      transition:border-color .2s;
+    }
+    .camp-textarea:focus { border-color:#1a1a1a44; }
+    .camp-optional {
+      font-family:"Montserrat",sans-serif; font-size:7px; color:#ccc;
+      letter-spacing:1.5px; margin-left:8px; text-transform:uppercase;
+    }
+    .camp-actions {
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      padding:0 32px 28px; border-top:1px solid #f0ece7; padding-top:20px;
+    }
+    .btn-camp {
+      font-family:"Montserrat",sans-serif; font-size:8px; font-weight:500;
+      letter-spacing:3px; text-transform:uppercase; padding:12px 20px;
+      border-radius:2px; cursor:pointer; transition:all .2s; border:none;
+    }
+    .btn-preview { background:transparent; border:1px solid #e0ddd7; color:#aaa; }
+    .btn-preview:hover { border-color:#1a1a1a; color:#1a1a1a; }
+    .btn-test { background:transparent; border:1px solid #e0ddd7; color:#aaa; }
+    .btn-test:hover { border-color:#1a1a1a; color:#1a1a1a; }
+    .btn-send-uy { background:#1a1a1a; color:#fff; }
+    .btn-send-uy:hover { opacity:.8; }
+    .btn-camp:disabled { opacity:.25; cursor:not-allowed; }
+    .camp-msg {
+      font-size:14px; font-style:italic; margin-left:4px;
+      display:none; padding:0 32px 20px;
+    }
+    .camp-msg.ok { color:#27ae60; }
+    .camp-msg.err { color:#c0392b; }
+
+    /* ── QUICK ACCESS ────── */
+    .quick-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+    .quick-card {
+      background:#ffffff; border:1px solid #e5e2dc; border-radius:3px;
+      padding:22px 24px; display:flex; align-items:center;
+      justify-content:space-between; text-decoration:none;
+      color:#999; font-size:15px; font-style:italic;
+      transition:border-color .2s, color .2s;
+    }
+    .quick-card:hover { border-color:#aaa; color:#1a1a1a; }
+    .quick-arr { color:#1a1a1a; opacity:.25; font-size:18px; font-style:normal; }
+
+    /* Footer */
+    .panel-footer {
+      text-align:center; padding-top:60px;
+      font-family:"Montserrat",sans-serif; font-size:8px;
+      color:#ccc; letter-spacing:3px; text-transform:uppercase;
+    }
+
+    /* Loading spinner */
+    .loading-dots {
+      display:inline-block; color:#ddd; font-family:"Montserrat",sans-serif;
+      font-size:9px; letter-spacing:3px; animation:pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    /* Responsive */
+    @media (max-width:700px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .content { padding:28px 18px 60px; }
+      .topbar { padding:0 18px; }
+      .topbar-sep, .topbar-sub { display:none; }
+      .status-row { padding:14px 20px; flex-direction:column; align-items:flex-start; gap:6px; }
+      .prizes-body, .camp-fields, .camp-actions { padding-left:20px; padding-right:20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <img class="login-logo" src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
+    <h1>Panel de Control &nbsp;·&nbsp; Wine Club</h1>
+    <input type="password" id="pwd" placeholder="contraseña"
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">INGRESAR</button>
+    <div class="login-error" id="login-err">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ══════════════ PANEL ══════════════ -->
+<div id="panel">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
+      <div class="topbar-sep"></div>
+      <div>
+        <div class="topbar-title">Panel de Control</div>
+        <div class="topbar-sub">Wine Club · Restaurante</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-top btn-top-gold" onclick="loadData()">ACTUALIZAR</button>
+      <button class="btn-top btn-top-ghost" onclick="doLogout()">CERRAR SESIÓN</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── ANOTADOS ── -->
+    <div class="sec-label">A N O T A D O S</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-num" id="stat-total"><span class="loading-dots">···</span></span>
+        <span class="stat-label">TOTAL</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="stat-uy"><span class="loading-dots">···</span></span>
+        <span class="stat-label">URUGUAY</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="stat-br"><span class="loading-dots">···</span></span>
+        <span class="stat-label">BRASIL</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="stat-otro"><span class="loading-dots">···</span></span>
+        <span class="stat-label">OTRO PAÍS</span>
+      </div>
+    </div>
+
+    <!-- ── SISTEMA ── -->
+    <div class="sec-label">E S T A D O &nbsp; D E L &nbsp; S I S T E M A</div>
+    <div class="card">
+      <div class="status-row">
+        <span class="lbl">Remitente de emails</span>
+        <span class="val" id="sys-sender">marketingpizzorno@gmail.com</span>
+      </div>
+      <div class="status-row">
+        <span class="lbl">Verificación en Brevo</span>
+        <span class="verified">VERIFICADO</span>
+      </div>
+      <div class="status-row">
+        <span class="lbl">Último registro</span>
+        <span class="val" id="sys-last"><span class="loading-dots">···</span></span>
+      </div>
+    </div>
+
+    <!-- ── PREMIOS Y CÓDIGOS ── -->
+    <div class="sec-label">P R E M I O S &nbsp; Y &nbsp; C Ó D I G O S</div>
+    <div class="card">
+      <div class="prizes-body">
+
+        <div class="country-head">URUGUAY</div>
+        <div class="field-lbl">PREMIO DEL SORTEO MENSUAL</div>
+        <input class="field-input" id="uy-prize" type="text"
+               value="6 botellas de vino · selección del enólogo">
+
+        <hr class="prizes-divider">
+
+        <div class="country-head">BRASIL</div>
+        <div class="field-lbl">CÓDIGO DE DESCUENTO</div>
+        <input class="field-input" id="br-code" type="text" value="PIZZORNO10">
+        <div class="field-lbl">LINK (GRAND CRU)</div>
+        <input class="field-input" id="br-link" type="text"
+               value="https://www.grandcru.com.br/vinhos?name=Pizzorno&q=Pizzorno">
+
+        <hr class="prizes-divider">
+
+        <div class="country-head">OTRO PAÍS</div>
+        <div class="field-lbl">CÓDIGO / VOUCHER</div>
+        <input class="field-input" id="otro-code" type="text" value="PIZZORNO-VIP">
+        <div class="field-lbl">LINK (PIZZORNO WINES)</div>
+        <input class="field-input" id="otro-link" type="text"
+               value="https://www.pizzornowines.com">
+
+        <hr class="prizes-divider">
+
+        <button class="btn-save" id="btn-save-prizes" onclick="savePrizes()">
+          GUARDAR CAMBIOS
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ÚLTIMOS ANOTADOS ── -->
+    <div class="sec-label">Ú L T I M O S &nbsp; A N O T A D O S</div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>FECHA</th>
+            <th>NOMBRE</th>
+            <th>APELLIDO</th>
+            <th>EMAIL</th>
+            <th>TELÉFONO</th>
+            <th>PAÍS</th>
+          </tr>
+        </thead>
+        <tbody id="contacts-tbody">
+          <tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── CREAR CAMPAÑA ── -->
+    <div class="sec-label">C R E A R &nbsp; C A M P A Ñ A &nbsp;·&nbsp; A N U N C I O &nbsp; D E &nbsp; E V E N T O</div>
+    <div class="card">
+      <div class="camp-header">
+        Se envía por email a los contactos de <strong>Uruguay</strong>
+        (<span id="uy-count"><span class="loading-dots">···</span></span> en este momento).
+      </div>
+      <div class="camp-fields">
+        <div class="camp-row">
+          <div class="camp-lbl">ASUNTO DEL EMAIL</div>
+          <input class="camp-input" id="camp-asunto" type="text"
+                 placeholder="Ej: Te esperamos en nuestra próxima cata">
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">TÍTULO DEL EVENTO</div>
+          <input class="camp-input" id="camp-titulo" type="text"
+                 placeholder="Ej: Cata de vinos de otoño">
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">FECHA Y HORA</div>
+          <input class="camp-input" id="camp-fecha" type="text"
+                 placeholder="Ej: Viernes 25 de julio, 20:00hs">
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">DESCRIPCIÓN</div>
+          <textarea class="camp-textarea" id="camp-desc"
+                    placeholder="Contanos de qué se trata el evento..."></textarea>
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">TEXTO DEL BOTÓN <span class="camp-optional">OPCIONAL</span></div>
+          <input class="camp-input" id="camp-btn-txt" type="text"
+                 placeholder="Ej: Quiero reservar mi lugar">
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">LINK DEL BOTÓN <span class="camp-optional">OPCIONAL</span></div>
+          <input class="camp-input" id="camp-btn-link" type="url"
+                 placeholder="https://...">
+        </div>
+        <div class="camp-row">
+          <div class="camp-lbl">IMAGEN DEL EVENTO <span class="camp-optional">OPCIONAL · subí primero a imgbb.com</span></div>
+          <input class="camp-input" id="camp-img" type="url"
+                 placeholder="https://i.ibb.co/...">
+        </div>
+        <div class="camp-row" style="margin-bottom:0">
+          <div class="camp-lbl">EMAIL PARA LA PRUEBA</div>
+          <input class="camp-input" id="camp-test-email" type="email"
+                 placeholder="tu@email.com">
+        </div>
+      </div>
+      <div class="camp-actions">
+        <button class="btn-camp btn-preview" onclick="previewCampaign()">VER VISTA PREVIA</button>
+        <button class="btn-camp btn-test" id="btn-test" onclick="sendTest()">ENVIAR PRUEBA</button>
+        <button class="btn-camp btn-send-uy" id="btn-send" onclick="confirmSend()">ENVIAR A URUGUAY</button>
+      </div>
+      <div class="camp-msg ok" id="camp-ok"></div>
+      <div class="camp-msg err" id="camp-err"></div>
+    </div>
+
+    <!-- ── HISTORIAL ── -->
+    <div class="sec-label">H I S T O R I A L &nbsp; D E &nbsp; C A M P A Ñ A S</div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ENVIADA EL</th>
+            <th>ASUNTO</th>
+            <th>EVENTO</th>
+            <th>FECHA DEL EVENTO</th>
+            <th>ENVIADOS</th>
+          </tr>
+        </thead>
+        <tbody id="hist-tbody">
+          <tr class="empty-msg"><td colspan="5">Todavía no se envió ninguna campaña.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── ACCESOS RÁPIDOS ── -->
+    <div class="sec-label">A C C E S O S &nbsp; R Á P I D O S</div>
+    <div class="quick-grid">
+      <a class="quick-card" href="https://comforting-souffle-ce6f0c.netlify.app" target="_blank">
+        <span>Ver formulario público</span><span class="quick-arr">→</span>
+      </a>
+      <a class="quick-card"
+         href="https://qrcode-monkey.com/#https://comforting-souffle-ce6f0c.netlify.app"
+         target="_blank">
+        <span>Descargar código QR</span><span class="quick-arr">→</span>
+      </a>
+      <a class="quick-card"
+         href="https://docs.google.com/spreadsheets/d/1hJX8JTrqtroi3kaQZateT7IK2j1l27qjBBGUiYVe2w8/edit"
+         target="_blank">
+        <span>Abrir planilla (Sheets)</span><span class="quick-arr">→</span>
+      </a>
+      <a class="quick-card" href="https://app.brevo.com/contact/list" target="_blank">
+        <span>Abrir lista en Brevo</span><span class="quick-arr">→</span>
+      </a>
+    </div>
+
+    <div class="panel-footer">Bodega Pizzorno · Uruguay &nbsp;·&nbsp; Panel interno</div>
+
+  </div><!-- /content -->
+</div><!-- /panel -->
+
+<script>
+/* ══════════════════════════════════════
+   CONFIG
+══════════════════════════════════════ */
+var SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbxxuvrlQClxEWoT1KIAlwdVo-tzxc3np2bACvYwobdJrgEEWt7yVa9SXddkdpVzHEk/exec';
+var PASS        = 'Pizzorno2026';   // ← cambiá esto si querés otra clave
+
+/* ══════════════════════════════════════
+   AUTH
+══════════════════════════════════════ */
+function doLogin() {
+  var pwd = document.getElementById('pwd').value;
+  if (pwd === PASS) {
+    sessionStorage.setItem('pz-auth','1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    initPanel();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('pwd').value = '';
+    document.getElementById('pwd').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('pz-auth');
+  document.getElementById('panel').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd').value = '';
+  document.getElementById('login-err').style.display = 'none';
+}
+
+window.addEventListener('load', function() {
+  if (sessionStorage.getItem('pz-auth') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    initPanel();
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+    doLogin();
+  }
+});
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+function initPanel() {
+  loadPrizes();
+  renderHistory();
+  loadData();
+}
+
+/* ══════════════════════════════════════
+   LOAD DATA (Apps Script API)
+══════════════════════════════════════ */
+function loadData() {
+  setStats('<span class="loading-dots">···</span>');
+  document.getElementById('sys-last').innerHTML = '<span class="loading-dots">···</span>';
+  document.getElementById('contacts-tbody').innerHTML =
+    '<tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>';
+
+  fetch(SCRIPT_URL + '?action=getContacts')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.ok) throw new Error(data.error || 'Error del servidor');
+
+      // Stats
+      document.getElementById('stat-total').textContent = data.stats.total;
+      document.getElementById('stat-uy').textContent    = data.stats.uruguay;
+      document.getElementById('stat-br').textContent    = data.stats.brasil;
+      document.getElementById('stat-otro').textContent  = data.stats.otro;
+      document.getElementById('uy-count').textContent   = data.stats.uruguay;
+
+      // Last register
+      if (data.contacts && data.contacts.length > 0) {
+        var c = data.contacts[0];
+        var parts = [(c.nombre || '') + ' ' + (c.apellido || ''), c.pais || 'Uruguay', fmtDate(c.fecha)];
+        document.getElementById('sys-last').textContent = parts.filter(Boolean).join(' · ');
+      } else {
+        document.getElementById('sys-last').textContent = 'Sin registros aún';
+      }
+
+      // Table
+      renderContacts(data.contacts || []);
+    })
+    .catch(function(err) {
+      setStats('?');
+      document.getElementById('sys-last').textContent = 'Error al cargar';
+      document.getElementById('contacts-tbody').innerHTML =
+        '<tr class="empty-msg"><td colspan="6" style="color:#5a3535;">Error al cargar datos. ' +
+        'Asegurate de que el Apps Script esté actualizado y desplegado.</td></tr>';
+      console.error('[Panel Pizzorno]', err);
+    });
+}
+
+function setStats(html) {
+  ['stat-total','stat-uy','stat-br','stat-otro','uy-count'].forEach(function(id) {
+    document.getElementById(id).innerHTML = html;
+  });
+}
+
+function fmtDate(str) {
+  if (!str) return '';
+  try {
+    var d = new Date(str);
+    if (!isNaN(d)) {
+      return d.toLocaleDateString('es-UY', {day:'2-digit',month:'2-digit',year:'numeric'}) +
+             ', ' + d.toLocaleTimeString('es-UY', {hour:'2-digit',minute:'2-digit'}) + ' hs';
+    }
+  } catch(e) {}
+  return str.toString().split(' ')[0];
+}
+
+function esc(s) {
+  if (!s) return '';
+  return s.toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderContacts(list) {
+  var tbody = document.getElementById('contacts-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr class="empty-msg"><td colspan="6">Sin registros todavía.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(function(c) {
+    var pc = c.pais === 'Uruguay' ? 'pais-uy' : c.pais === 'Brasil' ? 'pais-br' : 'pais-otro';
+    return '<tr>' +
+      '<td>' + esc(fmtDate(c.fecha)) + '</td>' +
+      '<td class="nombre">' + esc(c.nombre) + '</td>' +
+      '<td class="nombre">' + esc(c.apellido) + '</td>' +
+      '<td class="email-cell">' + esc(c.email) + '</td>' +
+      '<td>' + esc(c.telefono) + '</td>' +
+      '<td class="' + pc + '">' + esc(c.pais || 'Uruguay') + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+/* ══════════════════════════════════════
+   PREMIOS / CÓDIGOS  (localStorage)
+══════════════════════════════════════ */
+function loadPrizes() {
+  var p = JSON.parse(localStorage.getItem('pz-prizes') || '{}');
+  if (p['uy-prize'])  document.getElementById('uy-prize').value  = p['uy-prize'];
+  if (p['br-code'])   document.getElementById('br-code').value   = p['br-code'];
+  if (p['br-link'])   document.getElementById('br-link').value   = p['br-link'];
+  if (p['otro-code']) document.getElementById('otro-code').value = p['otro-code'];
+  if (p['otro-link']) document.getElementById('otro-link').value = p['otro-link'];
+}
+
+function savePrizes() {
+  var p = {
+    'uy-prize':  document.getElementById('uy-prize').value,
+    'br-code':   document.getElementById('br-code').value,
+    'br-link':   document.getElementById('br-link').value,
+    'otro-code': document.getElementById('otro-code').value,
+    'otro-link': document.getElementById('otro-link').value
+  };
+  // Guardar localmente
+  localStorage.setItem('pz-prizes', JSON.stringify(p));
+  // Guardar en el servidor (Apps Script) — así el formulario QR los lee
+  var qs = Object.keys(p).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]);
+  }).join('&');
+  fetch(SCRIPT_URL + '?action=saveConfig&' + qs).catch(function() {});
+  var btn = document.getElementById('btn-save-prizes');
+  btn.textContent = '✓  GUARDADO';
+  btn.classList.add('saved');
+  setTimeout(function() {
+    btn.textContent = 'GUARDAR CAMBIOS';
+    btn.classList.remove('saved');
+  }, 2500);
+}
+
+/* ══════════════════════════════════════
+   VISTA PREVIA  (renderizado local)
+══════════════════════════════════════ */
+function previewCampaign() {
+  var titulo   = document.getElementById('camp-titulo').value;
+  var fecha    = document.getElementById('camp-fecha').value;
+  var desc     = document.getElementById('camp-desc').value;
+  var btnTxt   = document.getElementById('camp-btn-txt').value;
+  var btnLink  = document.getElementById('camp-btn-link').value;
+  var img      = document.getElementById('camp-img').value;
+
+  if (!titulo) { campErr('Completá al menos el título del evento.'); return; }
+
+  var html = buildPreviewHtml(titulo, fecha, desc, btnTxt, btnLink, img);
+  var w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); }
+  else { campErr('El navegador bloqueó la ventana emergente. Permitila para esta página.'); }
+}
+
+function buildPreviewHtml(titulo, fecha, desc, btnTxt, btnLink, img) {
+  var imgBlock = img ?
+    '<img src="' + esc(img) + '" style="width:100%;display:block;border-radius:3px 3px 0 0;" alt="">' : '';
+  var btnBlock = (btnTxt && btnLink) ?
+    '<div style="text-align:center;padding:0 0 36px;">' +
+    '<a href="' + esc(btnLink) + '" style="display:inline-block;background:#c9a84c;color:#0b0b0b;' +
+    'text-decoration:none;font-family:Montserrat,sans-serif;font-size:10px;letter-spacing:3px;' +
+    'text-transform:uppercase;padding:14px 28px;border-radius:2px;">' + esc(btnTxt) + '</a></div>' : '';
+  var fechaBlock = fecha ?
+    '<p style="margin:0 0 20px;font-size:14px;color:#888;letter-spacing:1.5px;">' + esc(fecha) + '</p>' : '';
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&' +
+    'family=Montserrat:wght@400;500&display=swap" rel="stylesheet">' +
+    '<title>Vista previa · ' + esc(titulo) + '</title></head>' +
+    '<body style="margin:0;padding:24px;background:#111;font-family:Cormorant Garamond,Georgia,serif;">' +
+    '<div style="max-width:600px;margin:0 auto;background:#181818;border-radius:4px;overflow:hidden;">' +
+    imgBlock +
+    '<div style="padding:48px 40px 0;text-align:center;">' +
+    '<p style="margin:0 0 10px;font-family:Montserrat,sans-serif;font-size:9px;color:#444;' +
+    'letter-spacing:3.5px;text-transform:uppercase;">Bodega Pizzorno · Evento</p>' +
+    '<h1 style="margin:0 0 14px;font-size:30px;font-weight:400;color:#c9a84c;line-height:1.3;">' +
+    esc(titulo) + '</h1>' +
+    fechaBlock +
+    '</div>' +
+    '<div style="padding:0 40px 36px;">' +
+    '<p style="margin:0;font-size:16px;color:#999;line-height:1.7;">' +
+    esc(desc).replace(/\n/g,'<br>') + '</p></div>' +
+    btnBlock +
+    '<div style="text-align:center;padding:20px;border-top:1px solid #222;">' +
+    '<img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" ' +
+    'style="height:28px;filter:brightness(0) invert(1);opacity:.5;" alt="Pizzorno"></div>' +
+    '</div></body></html>';
+}
+
+/* ══════════════════════════════════════
+   ENVÍO DE CAMPAÑA (vía Apps Script)
+══════════════════════════════════════ */
+function sendTest() {
+  var asunto = document.getElementById('camp-asunto').value;
+  var titulo = document.getElementById('camp-titulo').value;
+  var testEm = document.getElementById('camp-test-email').value;
+  if (!asunto || !titulo) { campErr('Completá el asunto y el título.'); return; }
+  if (!testEm) { campErr('Ingresá un email para la prueba.'); return; }
+  sendCampaign('test');
+}
+
+function confirmSend() {
+  var asunto = document.getElementById('camp-asunto').value;
+  var titulo = document.getElementById('camp-titulo').value;
+  var uyN    = document.getElementById('uy-count').textContent;
+  if (!asunto || !titulo) { campErr('Completá el asunto y el título.'); return; }
+  var ok = confirm(
+    '¿Enviar "' + asunto + '" a los contactos de Uruguay (' + uyN + ' en este momento)?\n\n' +
+    'Esta acción no se puede deshacer.'
+  );
+  if (ok) sendCampaign('send');
+}
+
+function sendCampaign(modo) {
+  setCampLoading(true);
+  var url = SCRIPT_URL + '?action=sendCampaign' +
+    '&modo='      + encodeURIComponent(modo) +
+    '&asunto='    + encodeURIComponent(document.getElementById('camp-asunto').value) +
+    '&titulo='    + encodeURIComponent(document.getElementById('camp-titulo').value) +
+    '&fecha='     + encodeURIComponent(document.getElementById('camp-fecha').value) +
+    '&descripcion=' + encodeURIComponent(document.getElementById('camp-desc').value.substring(0,1200)) +
+    '&btnTexto='  + encodeURIComponent(document.getElementById('camp-btn-txt').value) +
+    '&btnLink='   + encodeURIComponent(document.getElementById('camp-btn-link').value) +
+    '&imagen='    + encodeURIComponent(document.getElementById('camp-img').value) +
+    '&testEmail=' + encodeURIComponent(document.getElementById('camp-test-email').value);
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      setCampLoading(false);
+      if (data.ok) {
+        if (modo === 'test') {
+          campOk('✓  Email de prueba enviado a ' + document.getElementById('camp-test-email').value);
+        } else {
+          campOk('✓  Campaña enviada a ' + (data.sent || '?') + ' contactos de Uruguay.');
+          saveToHistory({
+            date:    new Date().toLocaleDateString('es-UY') + ', ' +
+                     new Date().toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'}) + ' hs',
+            asunto:  document.getElementById('camp-asunto').value,
+            evento:  document.getElementById('camp-titulo').value,
+            fecha:   document.getElementById('camp-fecha').value,
+            enviados: data.sent || '?'
+          });
+        }
+      } else {
+        campErr('Error: ' + (data.error || 'desconocido'));
+      }
+    })
+    .catch(function(err) {
+      setCampLoading(false);
+      campErr('Error de conexión. Verificá que el Apps Script esté actualizado y desplegado correctamente.');
+      console.error('[Panel Pizzorno]', err);
+    });
+}
+
+function setCampLoading(on) {
+  document.getElementById('btn-test').disabled = on;
+  document.getElementById('btn-send').disabled = on;
+  if (on) { hideCampMsg(); }
+}
+function campOk(msg)  { var e=document.getElementById('camp-ok');  e.textContent=msg; e.style.display='block'; document.getElementById('camp-err').style.display='none'; }
+function campErr(msg) { var e=document.getElementById('camp-err'); e.textContent=msg; e.style.display='block'; document.getElementById('camp-ok').style.display='none'; }
+function hideCampMsg() {
+  document.getElementById('camp-ok').style.display='none';
+  document.getElementById('camp-err').style.display='none';
+}
+
+/* ══════════════════════════════════════
+   HISTORIAL  (localStorage)
+══════════════════════════════════════ */
+function saveToHistory(entry) {
+  var h = JSON.parse(localStorage.getItem('pz-hist') || '[]');
+  h.unshift(entry);
+  localStorage.setItem('pz-hist', JSON.stringify(h));
+  renderHistory();
+}
+
+function renderHistory() {
+  var h = JSON.parse(localStorage.getItem('pz-hist') || '[]');
+  var tbody = document.getElementById('hist-tbody');
+  if (!h.length) {
+    tbody.innerHTML = '<tr class="empty-msg"><td colspan="5">Todavía no se envió ninguna campaña.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = h.map(function(c) {
+    return '<tr>' +
+      '<td>' + esc(c.date) + '</td>' +
+      '<td class="nombre">' + esc(c.asunto) + '</td>' +
+      '<td>' + esc(c.evento) + '</td>' +
+      '<td>' + esc(c.fecha) + '</td>' +
+      '<td>' + esc(String(c.enviados)) + '</td>' +
+      '</tr>';
+  }).join('');
+}
+</script>
+</body>
+</html>
