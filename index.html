@@ -9,51 +9,243 @@
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
     body { min-height: 100vh; font-family: "Cormorant Garamond", Georgia, serif; }
-    #screen-pais { display: flex; flex-direction: column; align-items: center; min-height: 100vh; background: #ffffff; padding: 0 24px 56px; }
-    .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 52px 0 36px; width: 100%; }
-    .hero-logo { width: 200px; max-width: 65%; filter: brightness(0); opacity: 0.85; margin-bottom: 14px; }
-    .hero-sub { font-size: 10px; color: #888; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
-    .hero-divider { width: 48px; height: 1px; background: #c9a84c; margin: 0 auto 24px; }
-    .hero h1 { font-size: 40px; font-weight: 300; color: #1a1a1a; letter-spacing: 1px; line-height: 1.1; margin-bottom: 14px; }
-    .hero-italic { font-size: 16px; font-style: italic; font-weight: 300; color: #888; line-height: 1.6; }
-    .pais-question { font-size: 10px; color: #1a1a1a; letter-spacing: 3.5px; text-transform: uppercase; text-align: center; margin: 0 0 18px; }
-    .pais-cards { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 11px; }
-    .pais-card { display: flex; align-items: center; background: #ffffff; border: 1px solid #ccc; border-radius: 2px; padding: 18px 20px; cursor: pointer; transition: border-color 0.15s; gap: 16px; width: 100%; text-align: left; }
-    .pais-card:active { border-color: #c9a84c; }
+
+    /* ——— PANTALLA 1: SELECTOR DE PAÍS (dark) ——— */
+    #screen-pais {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #ffffff;
+      padding: 0 24px 56px;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 52px 0 36px;
+      width: 100%;
+    }
+    .hero-logo {
+      width: 200px;
+      max-width: 65%;
+      filter: brightness(0);
+      opacity: 0.85;
+      margin-bottom: 14px;
+    }
+    .hero-sub {
+      font-size: 10px;
+      color: #888;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-divider {
+      width: 48px;
+      height: 1px;
+      background: #c9a84c;
+      margin: 0 auto 24px;
+    }
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 300;
+      color: #1a1a1a;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .hero-italic {
+      font-size: 16px;
+      font-style: italic;
+      font-weight: 300;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    .pais-question {
+      font-size: 10px;
+      color: #1a1a1a;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 0 0 18px;
+    }
+
+    .pais-cards {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+    .pais-card {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      gap: 16px;
+      width: 100%;
+      text-align: left;
+    }
+    .pais-card:active {
+      border-color: #c9a84c;
+    }
     .pais-card .flag { font-size: 26px; line-height: 1; }
-    .pais-card .name { flex: 1; font-size: 20px; font-weight: 300; color: #111; letter-spacing: 0.3px; }
-    .pais-card .arrow { color: #bbb; font-size: 20px; font-weight: 300; }
-    #screen-form { display: none; background: #ffffff; min-height: 100vh; }
-    .page { display: flex; flex-direction: column; width: 100%; max-width: 440px; margin: 0 auto; padding: 36px 20px 0; min-height: 100vh; }
+    .pais-card .name {
+      flex: 1;
+      font-size: 20px;
+      font-weight: 300;
+      color: #111;
+      letter-spacing: 0.3px;
+    }
+    .pais-card .arrow {
+      color: #bbb;
+      font-size: 20px;
+      font-weight: 300;
+    }
+
+    /* ——— PANTALLA 2: FORMULARIO (white) ——— */
+    #screen-form {
+      display: none;
+      background: #ffffff;
+      min-height: 100vh;
+    }
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 36px 20px 0;
+      min-height: 100vh;
+    }
     .logo { text-align: center; margin-bottom: 24px; }
-    .logo img { width: 190px; max-width: 68%; display: block; margin: 0 auto; filter: brightness(0); opacity: 0.85; }
-    .logo p { font-size: 10px; color: #888; letter-spacing: 3.5px; text-transform: uppercase; margin-top: 10px; }
-    .banner { background: #faf7f2; border: 1px solid #c9a84c; border-radius: 3px; padding: 18px 20px; text-align: center; margin-bottom: 20px; }
-    .banner h2 { color: #1a1a1a; font-size: 17px; font-weight: 300; line-height: 1.45; }
-    .banner small { display: block; color: #888; font-size: 12px; margin-top: 6px; letter-spacing: 0.5px; }
+    .logo img {
+      width: 190px;
+      max-width: 68%;
+      display: block;
+      margin: 0 auto;
+      filter: brightness(0);
+      opacity: 0.85;
+    }
+    .logo p {
+      font-size: 10px;
+      color: #888;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+    .banner {
+      background: #faf7f2;
+      border: 1px solid #c9a84c;
+      border-radius: 3px;
+      padding: 18px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .banner h2 {
+      color: #1a1a1a;
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.45;
+    }
+    .banner small {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
     .f { margin-bottom: 12px; }
-    .f label { display: block; font-size: 9.5px; color: #1a1a1a; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 5px; }
-    .f input { display: block; width: 100%; background: #ffffff; border: 1px solid #ccc; border-radius: 2px; color: #111; font-family: inherit; font-size: 16px; padding: 13px 15px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+    .f label {
+      display: block;
+      font-size: 9.5px;
+      color: #1a1a1a;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .f input {
+      display: block;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      color: #111;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 13px 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
     .f input:focus { border-color: #c9a84c; }
     .f input::placeholder { color: #bbb; }
-    .ck { display: flex; align-items: flex-start; gap: 13px; margin: 8px 0 18px; }
-    .ck input[type="checkbox"] { width: 20px; height: 20px; min-width: 20px; margin-top: 2px; accent-color: #c9a84c; cursor: pointer; }
+    .ck {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      margin: 8px 0 18px;
+    }
+    .ck input[type="checkbox"] {
+      width: 20px; height: 20px; min-width: 20px;
+      margin-top: 2px;
+      accent-color: #c9a84c;
+      cursor: pointer;
+    }
     .ck label { font-size: 13px; color: #333; line-height: 1.55; cursor: pointer; }
-    #btn { display: block; width: 100%; background: #c9a84c; border: none; border-radius: 2px; color: #fff; font-family: inherit; font-size: 11.5px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; padding: 17px; cursor: pointer; transition: opacity 0.2s; }
+    #btn {
+      display: block; width: 100%;
+      background: #c9a84c; border: none; border-radius: 2px;
+      color: #fff; font-family: inherit; font-size: 11.5px;
+      font-weight: 400; letter-spacing: 4px; text-transform: uppercase;
+      padding: 17px; cursor: pointer; transition: opacity 0.2s;
+    }
     #btn:disabled { opacity: 0.25; cursor: not-allowed; }
     #btn:not(:disabled):active { opacity: 0.7; }
     .spacer { flex: 1; min-height: 24px; }
     .foot { padding: 22px 0 30px; text-align: center; }
     .foot p { font-size: 9.5px; color: #bbb; letter-spacing: 2.5px; text-transform: uppercase; }
-    #screen-thanks { display: none; min-height: 100vh; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; }
-    #screen-thanks img { width: 170px; max-width: 62%; filter: brightness(0); opacity: 0.7; margin-bottom: 30px; }
+
+    /* ——— PANTALLA 3: GRACIAS ——— */
+    #screen-thanks {
+      display: none;
+      min-height: 100vh;
+      background: #ffffff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+    #screen-thanks img {
+      width: 170px; max-width: 62%;
+      filter: brightness(0); opacity: 0.7;
+      margin-bottom: 30px;
+    }
     #screen-thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 14px; }
     #screen-thanks p { color: #444; font-size: 15px; line-height: 1.7; }
-    .spin { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+
+    /* Spinner */
+    .spin {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid #fff; border-top-color: transparent;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 8px;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
+
+  <!-- PANTALLA 1: PAÍS -->
   <div id="screen-pais">
     <div class="hero">
       <img class="hero-logo" src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
@@ -62,7 +254,9 @@
       <h1>Wine Club</h1>
       <p class="hero-italic">Formá parte de nuestra comunidad<br>y obtené beneficios exclusivos</p>
     </div>
+
     <p class="pais-question">¿De qué país sos?</p>
+
     <div class="pais-cards">
       <button class="pais-card" onclick="seleccionarPais('Uruguay')">
         <span class="flag">🇺🇾</span>
@@ -82,6 +276,7 @@
     </div>
   </div>
 
+  <!-- PANTALLA 2: FORMULARIO -->
   <div id="screen-form">
     <div class="page">
       <div class="logo">
@@ -104,6 +299,7 @@
     </div>
   </div>
 
+  <!-- PANTALLA 3: GRACIAS -->
   <div id="screen-thanks">
     <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
     <h2>¡Gracias!</h2>
@@ -116,11 +312,34 @@
 
     document.getElementById("nac").max = new Date().toISOString().split("T")[0];
 
+    // Banners por defecto (se reemplazan con los del panel si están disponibles)
     var banners = {
       "Uruguay": "<h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
       "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código PIZZORNO10 para usar en Grand Cru</small>",
       "Otro":    "<h2>Accedé a beneficios exclusivos<br>en nuestra tienda online</h2><small>Te enviamos tu voucher PIZZORNO-VIP para usar en pizzornowines.com</small>"
     };
+
+    // Carga premios desde el panel via JSONP (sin CORS)
+    (function() {
+      var cb = '_pzCfg';
+      var timer = setTimeout(function() { delete window[cb]; }, 6000);
+      window[cb] = function(data) {
+        clearTimeout(timer);
+        delete window[cb];
+        var p = (data && (data.prizes || data)) || {};
+        if (p['uy-prize'] || p['br-code'] || p['otro-code']) {
+          banners = {
+            "Uruguay": "<h2>Participá por el sorteo mensual<br>de " + (p['uy-prize'] || '6 botellas de vino') + "</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
+            "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código " + (p['br-code'] || 'PIZZORNO10') + " para usar en Grand Cru</small>",
+            "Otro":    "<h2>Accedé a beneficios exclusivos<br>en nuestra tienda online</h2><small>Te enviamos tu voucher " + (p['otro-code'] || 'PIZZORNO-VIP') + " para usar en pizzornowines.com</small>"
+          };
+        }
+      };
+      var s = document.createElement('script');
+      s.src = SCRIPT_URL + '?action=config&callback=' + cb;
+      s.onerror = function() { clearTimeout(timer); delete window[cb]; };
+      document.head.appendChild(s);
+    })();
 
     function seleccionarPais(pais) {
       paisSeleccionado = pais;
@@ -151,7 +370,7 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spin"></span>Enviando...';
 
-      var payload_unused = new URLSearchParams({
+      var payload = JSON.stringify({
         submit: "1",
         nombre:     document.getElementById("nom").value.trim(),
         apellido:   document.getElementById("ape").value.trim(),
@@ -161,7 +380,7 @@
         nacimiento: document.getElementById("nac").value
       });
 
-      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({submit:"1",nombre:document.getElementById("nom").value.trim(),apellido:document.getElementById("ape").value.trim(),email:document.getElementById("mail").value.trim(),telefono:document.getElementById("tel").value.trim(),pais:paisSeleccionado,nacimiento:document.getElementById("nac").value}) })
+      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: payload })
         .then(function() { mostrarGracias(); })
         .catch(function() { mostrarGracias(); });
     });
