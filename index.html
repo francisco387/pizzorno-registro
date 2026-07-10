@@ -230,8 +230,9 @@
       filter: brightness(0); opacity: 0.7;
       margin-bottom: 30px;
     }
-    #screen-thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 14px; }
-    #screen-thanks p { color: #444; font-size: 15px; line-height: 1.7; }
+    #screen-thanks h2 { color: #c9a84c; font-size: 30px; font-weight: 300; margin-bottom: 20px; }
+    #screen-thanks p { color: #444; font-size: 15px; line-height: 1.7; margin-top: 14px; }
+    #screen-thanks .banner { width: 100%; max-width: 400px; margin-bottom: 0; }
 
     /* Spinner */
     .spin {
@@ -303,6 +304,7 @@
   <div id="screen-thanks">
     <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
     <h2>¡Gracias!</h2>
+    <div class="banner" id="thanks-banner"></div>
     <p id="thanks-msg">Tu registro fue exitoso.</p>
   </div>
 
@@ -424,6 +426,7 @@
 
     function mostrarGracias() {
       document.getElementById("screen-form").style.display = "none";
+      document.getElementById("thanks-banner").innerHTML = banners[paisSeleccionado] || banners["Uruguay"];
       document.getElementById("thanks-msg").innerHTML = thanksMsg[paisSeleccionado] || thanksMsg["Uruguay"];
       var t = document.getElementById("screen-thanks");
       t.style.display = "flex";
