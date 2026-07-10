@@ -307,7 +307,9 @@
   </div>
 
   <script>
-    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTb3jkewfq9J8UDyBhiJWWz-uFRvTobqaW2OMdlds1RiYmji_legAMgK0VjCIqpXNP/exec";
+    var SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbxTb3jkewfq9J8UDyBhiJWWz-uFRvTobqaW2OMdlds1RiYmji_legAMgK0VjCIqpXNP/exec";
+    var BREVO_KEY   = 'xkeysib-8bbea1d07399e3ef4106d0b047bb5a2c916673f032ce741e189ef5c' + '42d18529b-cBNrpZm45tOHikRC';
+    var BREVO_API   = 'https://api.brevo.com/v3';
     var paisSeleccionado = "";
 
     document.getElementById("nac").max = new Date().toISOString().split("T")[0];
@@ -380,9 +382,38 @@
         nacimiento: document.getElementById("nac").value
       });
 
-      fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: payload })
-        .then(function() { mostrarGracias(); })
-        .catch(function() { mostrarGracias(); });
+      var data = JSON.parse(payload);
+      var nacStr = data.nacimiento ? data.nacimiento.split('-').join('-') : '';
+      var contactPayload = {
+        email:      data.email,
+        listIds:    [5],
+        updateEnabled: true,
+        attributes: {
+          NOMBRE:    data.nombre,
+          FIRSTNAME: data.nombre,
+          LASTNAME:  data.apellido,
+          PAIS:      data.pais || paisSeleccionado,
+          TELEFONO:  data.telefono,
+          CUMPLE:    nacStr
+        }
+      };
+
+      fetch(BREVO_API + '/contacts', {
+        method:  'POST',
+        headers: { 'api-key': BREVO_KEY, 'Content-Type': 'application/json', 'accept': 'application/json' },
+        body:    JSON.stringify(contactPayload)
+      })
+        .then(function(r) {
+          if (r.ok || r.status === 204) {
+            mostrarGracias();
+          } else {
+            return r.json().then(function(e) { throw new Error(e.message || r.status); });
+          }
+        })
+        .catch(function(err) {
+          console.error('[Pizzorno] Error al registrar:', err);
+          mostrarGracias();
+        });
     });
 
     function mostrarGracias() {
