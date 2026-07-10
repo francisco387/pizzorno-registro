@@ -305,6 +305,9 @@
     <h2>¡Gracias!</h2>
     <div class="banner" id="thanks-banner"></div>
     <p id="thanks-msg">Tu registro fue exitoso.</p>
+    <div style="margin-top:36px;opacity:0.5;">
+      <img src="https://i.ibb.co/wZF1bLQs/logo-508076193-1618865787-913b0cbcaab935de744ef6c50d2807151618865787.png" style="width:120px;max-width:50%;">
+    </div>
   </div>
 
   <script>
@@ -317,7 +320,7 @@
 
     var banners = {
       "Uruguay": "<h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
-      "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código PIZZORNO10 para usar en Grand Cru</small>",
+      "Brasil":  "<h2>Ganhou 10% de desconto<br>em vinhos Pizzorno</h2><small>Enviamos o código PIZZORNO10 para usar na Grand Cru</small>",
       "Otro":    "<h2>Obtené un voucher de 5% de descuento<br>en City Winery</h2><small>Te enviamos tu voucher al email · <a href='https://www.citywineryuy.com' target='_blank' style='color:#c9a84c'>citywineryuy.com</a></small>"
     };
 
@@ -331,7 +334,7 @@
         if (p['uy-prize'] || p['br-code'] || p['otro-code']) {
           banners = {
             "Uruguay": "<h2>Participá por el sorteo mensual<br>de " + (p['uy-prize'] || '6 botellas de vino') + "</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
-            "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código " + (p['br-code'] || 'PIZZORNO10') + " para usar en Grand Cru</small>",
+            "Brasil":  "<h2>Ganhou 10% de desconto<br>em vinhos Pizzorno</h2><small>Enviamos o código " + (p['br-code'] || 'PIZZORNO10') + " para usar na Grand Cru</small>",
             "Otro":    "<h2>Obtené un voucher de 5% de descuento<br>en City Winery</h2><small>Te enviamos tu voucher " + (p['otro-code'] || 'PIZZORNO-VIP') + " al email · <a href='https://www.citywineryuy.com' target='_blank' style='color:#c9a84c'>citywineryuy.com</a></small>"
           };
         }
@@ -401,7 +404,7 @@
 
     var thanksMsg = {
       "Uruguay": "Tu registro fue exitoso.<br>Ya estás participando del sorteo mensual.",
-      "Brasil":  "Tu registro fue exitoso.<br>Tu código de descuento llegará a tu email en breve.",
+      "Brasil":  "Seu cadastro foi realizado com sucesso.<br>Seu código de desconto chegará ao seu email em breve.",
       "Otro":    "Tu registro fue exitoso.<br>Tu voucher de 5% en City Winery llegará a tu email en breve."
     };
 
