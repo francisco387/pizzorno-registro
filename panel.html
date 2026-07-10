@@ -531,7 +531,7 @@
 /* ══════════════════════════════════════
    CONFIG
 ══════════════════════════════════════ */
-var SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbxTb3jkewfq9J8UDyBhiJWWz-uFRvTobqaW2OMdlds1RiYmji_legAMgK0VjCIqpXNP/exec';
+var SCRIPT_URL  = '/api/apps-script';  // Netlify proxy → Apps Script (evita cookies de Google)
 var PASS        = 'Pizzorno2026';   // ← cambiá esto si querés otra clave
 
 /* ══════════════════════════════════════
@@ -585,16 +585,18 @@ function initPanel() {
 /* ══════════════════════════════════════
    LOAD DATA (Apps Script API)
 ══════════════════════════════════════ */
-function jsonpCall(url, cb) {
-  var name = '_pzcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-  var script = document.createElement('script');
-  var timer = setTimeout(function() { delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb({ ok: false, error: 'Timeout (15s)' }); }, 15000);
-  window[name] = function(data) { clearTimeout(timer); delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb(data); };
-  script.onerror = function() { clearTimeout(timer); delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb({ ok: false, error: 'Error de red' }); };
-  script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + name;
-  document.head.appendChild(script);
+function apiFetch(url, cb) {
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, 15000);
+  fetch(url, { signal: controller.signal })
+    .then(function(r) { clearTimeout(timer); return r.json(); })
+    .then(function(data) { cb(data); })
+    .catch(function(e) {
+      clearTimeout(timer);
+      cb({ ok: false, error: e.name === 'AbortError' ? 'Timeout (15s)' : (e.message || 'Error de red') });
+    });
 }
-
+var jsonpCall = apiFetch;
 function loadData() {
   setStats('<span class="loading-dots">···</span>');
   document.getElementById('sys-last').innerHTML = '<span class="loading-dots">···</span>';
