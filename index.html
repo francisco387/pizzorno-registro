@@ -284,7 +284,6 @@
         <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno Family Estates">
         <p>Canelones, Uruguay</p>
       </div>
-      <div class="banner" id="banner"></div>
       <div class="f"><label>Nombre</label><input type="text" id="nom" placeholder="Juan" autocomplete="given-name"></div>
       <div class="f"><label>Apellido</label><input type="text" id="ape" placeholder="García" autocomplete="family-name"></div>
       <div class="f"><label>Correo electrónico</label><input type="email" id="mail" placeholder="juan@ejemplo.com" autocomplete="email"></div>
@@ -316,14 +315,12 @@
 
     document.getElementById("nac").max = new Date().toISOString().split("T")[0];
 
-    // Banners por defecto (se reemplazan con los del panel si están disponibles)
     var banners = {
       "Uruguay": "<h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
       "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código PIZZORNO10 para usar en Grand Cru</small>",
       "Otro":    "<h2>Obtené un voucher de 5% de descuento<br>en City Winery</h2><small>Te enviamos tu voucher al email · <a href='https://www.citywineryuy.com' target='_blank' style='color:#c9a84c'>citywineryuy.com</a></small>"
     };
 
-    // Carga premios desde el panel via JSONP (sin CORS)
     (function() {
       var cb = '_pzCfg';
       var timer = setTimeout(function() { delete window[cb]; }, 6000);
@@ -347,7 +344,6 @@
 
     function seleccionarPais(pais) {
       paisSeleccionado = pais;
-      document.getElementById("banner").innerHTML = banners[pais] || banners["Otro"];
       document.getElementById("screen-pais").style.display = "none";
       document.getElementById("screen-form").style.display = "block";
       window.scrollTo(0, 0);
@@ -374,18 +370,13 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spin"></span>Enviando...';
 
-      var payload = JSON.stringify({
-        submit: "1",
+      var data = {
         nombre:     document.getElementById("nom").value.trim(),
         apellido:   document.getElementById("ape").value.trim(),
         email:      document.getElementById("mail").value.trim(),
         telefono:   document.getElementById("tel").value.trim(),
-        pais:       paisSeleccionado,
         nacimiento: document.getElementById("nac").value
-      });
-
-      var data = JSON.parse(payload);
-      var nacStr = data.nacimiento ? data.nacimiento.split('-').join('-') : '';
+      };
       var contactPayload = {
         email:      data.email,
         listIds:    [5],
@@ -394,28 +385,18 @@
           NOMBRE:    data.nombre,
           FIRSTNAME: data.nombre,
           LASTNAME:  data.apellido,
-          PAIS:      data.pais || paisSeleccionado,
+          PAIS:      paisSeleccionado,
           TELEFONO:  data.telefono,
-          CUMPLE:    nacStr
+          CUMPLE:    data.nacimiento
         }
       };
-
       fetch(BREVO_API + '/contacts', {
         method:  'POST',
         headers: { 'api-key': BREVO_KEY, 'Content-Type': 'application/json', 'accept': 'application/json' },
         body:    JSON.stringify(contactPayload)
       })
-        .then(function(r) {
-          if (r.ok || r.status === 204) {
-            mostrarGracias();
-          } else {
-            return r.json().then(function(e) { throw new Error(e.message || r.status); });
-          }
-        })
-        .catch(function(err) {
-          console.error('[Pizzorno] Error al registrar:', err);
-          mostrarGracias();
-        });
+        .then(function(r) { if (r.ok || r.status === 204) { mostrarGracias(); } else { return r.json().then(function(e) { throw new Error(e.message); }); } })
+        .catch(function() { mostrarGracias(); });
     });
 
     var thanksMsg = {
@@ -428,8 +409,7 @@
       document.getElementById("screen-form").style.display = "none";
       document.getElementById("thanks-banner").innerHTML = banners[paisSeleccionado] || banners["Uruguay"];
       document.getElementById("thanks-msg").innerHTML = thanksMsg[paisSeleccionado] || thanksMsg["Uruguay"];
-      var t = document.getElementById("screen-thanks");
-      t.style.display = "flex";
+      document.getElementById("screen-thanks").style.display = "flex";
     }
   </script>
 </body>
