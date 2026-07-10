@@ -10,7 +10,7 @@
     html, body { height: 100%; }
     body { min-height: 100vh; font-family: "Cormorant Garamond", Georgia, serif; }
 
-    /* ——— PANTALLA 1: SELECTOR DE PAÍS (dark) ——— */
+    /* ——— PANTALLA 1: SELECTOR DE PAÍS (dark) --- */
     #screen-pais {
       display: flex;
       flex-direction: column;
@@ -110,7 +110,7 @@
       font-weight: 300;
     }
 
-    /* ——— PANTALLA 2: FORMULARIO (white) ——— */
+    /* ——— PANTALLA 2: FORMULARIO (white) --- */
     #screen-form {
       display: none;
       background: #ffffff;
@@ -214,7 +214,7 @@
     .foot { padding: 22px 0 30px; text-align: center; }
     .foot p { font-size: 9.5px; color: #bbb; letter-spacing: 2.5px; text-transform: uppercase; }
 
-    /* ——— PANTALLA 3: GRACIAS ——— */
+    /* ——— PANTALLA 3: GRACIAS --- */
     #screen-thanks {
       display: none;
       min-height: 100vh;
@@ -352,11 +352,14 @@
       window.scrollTo(0, 0);
     }
 
+    function validEmail(v) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,=$/.test(v);
+    }
+
     function chk() {
       var ok = document.getElementById("nom").value.trim()
             && document.getElementById("ape").value.trim()
-            && document.getElementById("mail").checkValidity()
-            && document.getElementById("mail").value.trim()
+            && validEmail(document.getElementById("mail").value.trim())
             && document.getElementById("tel").value.trim()
             && document.getElementById("nac").value
             && document.getElementById("ac").checked;
