@@ -291,7 +291,7 @@
       <div class="f"><label>Fecha de cumpleaños</label><input type="date" id="nac"></div>
       <div class="ck">
         <input type="checkbox" id="ac">
-        <label for="ac">Acepto recibir comunicaciones de Restaurante Pizzorno y participar en el sorteo mensual.</label>
+        <label for="ac">Acepto recibir comunicaciones de Restaurante Pizzorno y participar en los beneficios del Wine Club.</label>
       </div>
       <button id="btn" disabled>Registrarme</button>
       <div class="spacer"></div>
@@ -303,7 +303,7 @@
   <div id="screen-thanks">
     <img src="https://i.ibb.co/MxJqrZjZ/logo-pizzorno-transparente.png" alt="Pizzorno">
     <h2>¡Gracias!</h2>
-    <p>Tu registro fue exitoso.<br>Ya estás participando del sorteo mensual.</p>
+    <p id="thanks-msg">Tu registro fue exitoso.</p>
   </div>
 
   <script>
@@ -318,7 +318,7 @@
     var banners = {
       "Uruguay": "<h2>Participá por el sorteo mensual<br>de 6 botellas de vino</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
       "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código PIZZORNO10 para usar en Grand Cru</small>",
-      "Otro":    "<h2>Accedé a beneficios exclusivos<br>en nuestra tienda online</h2><small>Te enviamos tu voucher PIZZORNO-VIP para usar en pizzornowines.com</small>"
+      "Otro":    "<h2>Obtené un voucher de 5% de descuento<br>en City Winery</h2><small>Te enviamos tu voucher al email · <a href='https://www.citywineryuy.com' target='_blank' style='color:#c9a84c'>citywineryuy.com</a></small>"
     };
 
     // Carga premios desde el panel via JSONP (sin CORS)
@@ -333,7 +333,7 @@
           banners = {
             "Uruguay": "<h2>Participá por el sorteo mensual<br>de " + (p['uy-prize'] || '6 botellas de vino') + "</h2><small>Selección del enólogo · el premio se retira en City Winery</small>",
             "Brasil":  "<h2>Ganaste un 10% de descuento<br>en vinos Pizzorno</h2><small>Te enviamos el código " + (p['br-code'] || 'PIZZORNO10') + " para usar en Grand Cru</small>",
-            "Otro":    "<h2>Accedé a beneficios exclusivos<br>en nuestra tienda online</h2><small>Te enviamos tu voucher " + (p['otro-code'] || 'PIZZORNO-VIP') + " para usar en pizzornowines.com</small>"
+            "Otro":    "<h2>Obtené un voucher de 5% de descuento<br>en City Winery</h2><small>Te enviamos tu voucher " + (p['otro-code'] || 'PIZZORNO-VIP') + " al email · <a href='https://www.citywineryuy.com' target='_blank' style='color:#c9a84c'>citywineryuy.com</a></small>"
           };
         }
       };
@@ -416,8 +416,15 @@
         });
     });
 
+    var thanksMsg = {
+      "Uruguay": "Tu registro fue exitoso.<br>Ya estás participando del sorteo mensual.",
+      "Brasil":  "Tu registro fue exitoso.<br>Tu código de descuento llegará a tu email en breve.",
+      "Otro":    "Tu registro fue exitoso.<br>Tu voucher de 5% en City Winery llegará a tu email en breve."
+    };
+
     function mostrarGracias() {
       document.getElementById("screen-form").style.display = "none";
+      document.getElementById("thanks-msg").innerHTML = thanksMsg[paisSeleccionado] || thanksMsg["Uruguay"];
       var t = document.getElementById("screen-thanks");
       t.style.display = "flex";
     }
