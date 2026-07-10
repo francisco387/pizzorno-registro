@@ -533,6 +533,16 @@
 ══════════════════════════════════════ */
 var SCRIPT_URL  = '/api/apps-script';  // Netlify proxy → Apps Script (evita cookies de Google)
 var PASS        = 'Pizzorno2026';   // ← cambiá esto si querés otra clave
+var BREVO_KEY   = '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';
+var BREVO_API   = 'https://api.brevo.com/v3';
+
+function getBucketClient(pais) {
+  if (!pais || pais.trim() === '') return 'other';
+  var p = pais.trim().toLowerCase();
+  if (p.indexOf('brasil') !== -1 || p.indexOf('brazil') !== -1) return 'brasil';
+  if (p.indexOf('uruguay') !== -1) return 'uruguay';
+  return 'other';
+}
 
 /* ══════════════════════════════════════
    AUTH
@@ -583,36 +593,62 @@ function initPanel() {
 }
 
 /* ══════════════════════════════════════
-   LOAD DATA (Apps Script API)
+   LOAD DATA (Brevo API directo)
 ══════════════════════════════════════ */
-function apiFetch(url, cb) {
-  var controller = new AbortController();
-  var timer = setTimeout(function() { controller.abort(); }, 15000);
-  fetch(url, { signal: controller.signal })
-    .then(function(r) { clearTimeout(timer); return r.json(); })
-    .then(function(data) { cb(data); })
-    .catch(function(e) {
-      clearTimeout(timer);
-      cb({ ok: false, error: e.name === 'AbortError' ? 'Timeout (15s)' : (e.message || 'Error de red') });
-    });
-}
-var jsonpCall = apiFetch;
 function loadData() {
   setStats('<span class="loading-dots">···</span>');
   document.getElementById('sys-last').innerHTML = '<span class="loading-dots">···</span>';
-  document.getElementById('contacts-tbody').innerHTML = '<tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>';
-  jsonpCall(SCRIPT_URL + '?action=getContacts', function(data) {
-    if (!data.ok) { setStats('?'); document.getElementById('sys-last').textContent = 'Error: ' + (data.error||'sin respuesta'); document.getElementById('contacts-tbody').innerHTML = '<tr class="empty-msg"><td colspan="6" style="color:#5a3535;">Error: ' + (data.error||'Apps Script no responde') + '</td></tr>'; return; }
-    document.getElementById('stat-total').textContent = data.stats.total;
-    document.getElementById('stat-uy').textContent = data.stats.uruguay;
-    document.getElementById('stat-br').textContent = data.stats.brasil;
-    document.getElementById('stat-otro').textContent = data.stats.otro;
-    document.getElementById('uy-count').textContent = data.stats.uruguay;
-    if (data.contacts && data.contacts.length > 0) { var c = data.contacts[0]; document.getElementById('sys-last').textContent = [(c.nombre||'')+' '+(c.apellido||''), c.pais||'Uruguay', fmtDate(c.fecha)].filter(Boolean).join(' · '); } else { document.getElementById('sys-last').textContent = 'Sin registros aún'; }
-    renderContacts(data.contacts || []);
-  });
-}
+  document.getElementById('contacts-tbody').innerHTML =
+    '<tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>';
 
+  var h = { 'api-key': BREVO_KEY, 'accept': 'application/json' };
+
+  fetch(BREVO_API + '/contacts?limit=1', { headers: h })
+    .then(function(r) { return r.json(); })
+    .then(function(d1) {
+      var total = d1.count || 0;
+      return fetch(BREVO_API + '/contacts?limit=100&sort=desc', { headers: h })
+        .then(function(r) { return r.json(); })
+        .then(function(d2) {
+          var contacts = d2.contacts || [];
+          var sample   = contacts.length;
+          var uyN = 0, brN = 0;
+          contacts.forEach(function(c) {
+            var pais = (c.attributes && c.attributes.PAIS) ? c.attributes.PAIS : '';
+            var b = getBucketClient(pais);
+            if      (b === 'uruguay') uyN++;
+            else if (b === 'brasil')  brN++;
+          });
+          var uy   = sample > 0 ? Math.round(uyN * total / sample) : 0;
+          var br   = sample > 0 ? Math.round(brN * total / sample) : 0;
+          var otro = Math.max(0, total - uy - br);
+          document.getElementById('stat-total').textContent = total;
+          document.getElementById('stat-uy').textContent    = uy;
+          document.getElementById('stat-br').textContent    = br;
+          document.getElementById('stat-otro').textContent  = otro;
+          document.getElementById('uy-count').textContent   = uy;
+          if (contacts.length > 0) {
+            var c0 = contacts[0], at0 = c0.attributes || {};
+            var nom0 = ((at0.FIRSTNAME||at0.NOMBRE||'') + ' ' + (at0.LASTNAME||at0.APELLIDO||'')).trim();
+            document.getElementById('sys-last').textContent = [nom0, at0.PAIS||'Uruguay', fmtDate(c0.createdAt)].filter(Boolean).join(' · ');
+          } else {
+            document.getElementById('sys-last').textContent = 'Sin registros aún';
+          }
+          var formatted = contacts.slice(0, 50).map(function(c) {
+            var at = c.attributes || {};
+            return { email: c.email||'', nombre: at.FIRSTNAME||at.NOMBRE||'', apellido: at.LASTNAME||at.APELLIDO||'', telefono: at.TELEFONO||at.PHONE||'', pais: at.PAIS||'Uruguay', fecha: c.createdAt||'' };
+          });
+          renderContacts(formatted);
+        });
+    })
+    .catch(function(err) {
+      setStats('?');
+      document.getElementById('sys-last').textContent = 'Error: ' + err.message;
+      document.getElementById('contacts-tbody').innerHTML =
+        '<tr class="empty-msg"><td colspan="6" style="color:#5a3535;">Error: ' + err.message + '</td></tr>';
+      console.error('[Panel Pizzorno] Brevo API error:', err);
+    });
+}
 function setStats(html) {
   ['stat-total','stat-uy','stat-br','stat-otro','uy-count'].forEach(function(id) {
     document.getElementById(id).innerHTML = html;
