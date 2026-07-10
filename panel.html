@@ -585,44 +585,30 @@ function initPanel() {
 /* ══════════════════════════════════════
    LOAD DATA (Apps Script API)
 ══════════════════════════════════════ */
+function jsonpCall(url, cb) {
+  var name = '_pzcb_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  var script = document.createElement('script');
+  var timer = setTimeout(function() { delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb({ ok: false, error: 'Timeout (15s)' }); }, 15000);
+  window[name] = function(data) { clearTimeout(timer); delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb(data); };
+  script.onerror = function() { clearTimeout(timer); delete window[name]; if (script.parentNode) script.parentNode.removeChild(script); cb({ ok: false, error: 'Error de red' }); };
+  script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + name;
+  document.head.appendChild(script);
+}
+
 function loadData() {
   setStats('<span class="loading-dots">···</span>');
   document.getElementById('sys-last').innerHTML = '<span class="loading-dots">···</span>';
-  document.getElementById('contacts-tbody').innerHTML =
-    '<tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>';
-
-  fetch(SCRIPT_URL + '?action=getContacts')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (!data.ok) throw new Error(data.error || 'Error del servidor');
-
-      // Stats
-      document.getElementById('stat-total').textContent = data.stats.total;
-      document.getElementById('stat-uy').textContent    = data.stats.uruguay;
-      document.getElementById('stat-br').textContent    = data.stats.brasil;
-      document.getElementById('stat-otro').textContent  = data.stats.otro;
-      document.getElementById('uy-count').textContent   = data.stats.uruguay;
-
-      // Last register
-      if (data.contacts && data.contacts.length > 0) {
-        var c = data.contacts[0];
-        var parts = [(c.nombre || '') + ' ' + (c.apellido || ''), c.pais || 'Uruguay', fmtDate(c.fecha)];
-        document.getElementById('sys-last').textContent = parts.filter(Boolean).join(' · ');
-      } else {
-        document.getElementById('sys-last').textContent = 'Sin registros aún';
-      }
-
-      // Table
-      renderContacts(data.contacts || []);
-    })
-    .catch(function(err) {
-      setStats('?');
-      document.getElementById('sys-last').textContent = 'Error al cargar';
-      document.getElementById('contacts-tbody').innerHTML =
-        '<tr class="empty-msg"><td colspan="6" style="color:#5a3535;">Error al cargar datos. ' +
-        'Asegurate de que el Apps Script esté actualizado y desplegado.</td></tr>';
-      console.error('[Panel Pizzorno]', err);
-    });
+  document.getElementById('contacts-tbody').innerHTML = '<tr class="empty-msg"><td colspan="6">Cargando contactos...</td></tr>';
+  jsonpCall(SCRIPT_URL + '?action=getContacts', function(data) {
+    if (!data.ok) { setStats('?'); document.getElementById('sys-last').textContent = 'Error: ' + (data.error||'sin respuesta'); document.getElementById('contacts-tbody').innerHTML = '<tr class="empty-msg"><td colspan="6" style="color:#5a3535;">Error: ' + (data.error||'Apps Script no responde') + '</td></tr>'; return; }
+    document.getElementById('stat-total').textContent = data.stats.total;
+    document.getElementById('stat-uy').textContent = data.stats.uruguay;
+    document.getElementById('stat-br').textContent = data.stats.brasil;
+    document.getElementById('stat-otro').textContent = data.stats.otro;
+    document.getElementById('uy-count').textContent = data.stats.uruguay;
+    if (data.contacts && data.contacts.length > 0) { var c = data.contacts[0]; document.getElementById('sys-last').textContent = [(c.nombre||'')+' '+(c.apellido||''), c.pais||'Uruguay', fmtDate(c.fecha)].filter(Boolean).join(' · '); } else { document.getElementById('sys-last').textContent = 'Sin registros aún'; }
+    renderContacts(data.contacts || []);
+  });
 }
 
 function setStats(html) {
@@ -694,7 +680,7 @@ function savePrizes() {
   var qs = Object.keys(p).map(function(k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]);
   }).join('&');
-  fetch(SCRIPT_URL + '?action=saveConfig&' + qs).catch(function() {});
+  jsonpCall(SCRIPT_URL + '?action=saveConfig&' + qs, function() {});
   var btn = document.getElementById('btn-save-prizes');
   btn.textContent = '✓  GUARDADO';
   btn.classList.add('saved');
@@ -795,9 +781,7 @@ function sendCampaign(modo) {
     '&imagen='    + encodeURIComponent(document.getElementById('camp-img').value) +
     '&testEmail=' + encodeURIComponent(document.getElementById('camp-test-email').value);
 
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
+  jsonpCall(url, function(data) {
       setCampLoading(false);
       if (data.ok) {
         if (modo === 'test') {
@@ -816,12 +800,7 @@ function sendCampaign(modo) {
       } else {
         campErr('Error: ' + (data.error || 'desconocido'));
       }
-    })
-    .catch(function(err) {
-      setCampLoading(false);
-      campErr('Error de conexión. Verificá que el Apps Script esté actualizado y desplegado correctamente.');
-      console.error('[Panel Pizzorno]', err);
-    });
+      });
 }
 
 function setCampLoading(on) {
