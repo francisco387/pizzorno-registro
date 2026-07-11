@@ -388,6 +388,14 @@
         nacimiento: document.getElementById("nac").value
       });
 
+      // Guardar en Google Sheet vía Apps Script (fire-and-forget)
+      fetch(SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body:    payload
+      }).catch(function() {});
+
       var data = JSON.parse(payload);
       var nacStr = data.nacimiento ? data.nacimiento.split('-').join('-') : '';
       var contactPayload = {
