@@ -388,17 +388,12 @@
         nacimiento: document.getElementById("nac").value
       });
 
-            // Guardar en Google Sheet vía Apps Script GET (fire-and-forget)
-      var formParams = new URLSearchParams({
-        action:     'saveForm',
-        nombre:     document.getElementById("nom").value.trim(),
-        apellido:   document.getElementById("ape").value.trim(),
-        email:      document.getElementById("mail").value.trim(),
-        telefono:   document.getElementById("tel").value.trim(),
-        nacimiento: document.getElementById("nac").value,
-        pais:       paisSeleccionado
-      });
-      fetch(SCRIPT_URL + '?' + formParams.toString(), { mode: 'no-cors' }).catch(function() {});  var data = JSON.parse(payload);
+            // Guardar en Google Sheet vía Make.com webhook (fire-and-forget, anónimo)
+      fetch('https://hook.us2.make.com/k0bq8i0hsh60qxv6bwamjclfxbknnjxn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      }).catch(function() {});  var data = JSON.parse(payload);
       var nacStr = data.nacimiento ? data.nacimiento.split('-').join('-') : '';
       var contactPayload = {
         email:      data.email,
