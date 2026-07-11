@@ -389,12 +389,12 @@
 
         <hr class="prizes-divider">
 
-        <div class="country-head">OTRO PAÍS</div>
-        <div class="field-lbl">CÓDIGO / VOUCHER</div>
-        <input class="field-input" id="otro-code" type="text" value="PIZZORNO-VIP">
-        <div class="field-lbl">LINK (PIZZORNO WINES)</div>
+        <div class="country-head">OTRO PAÍS · CITY WINERY</div>
+        <div class="field-lbl">% DE DESCUENTO</div>
+        <input class="field-input" id="otro-pct" type="text" value="5">
+        <div class="field-lbl">LINK CITY WINERY</div>
         <input class="field-input" id="otro-link" type="text"
-               value="https://www.pizzornowines.com">
+               value="https://www.citywineryuy.com">
 
         <hr class="prizes-divider">
 
@@ -700,7 +700,8 @@ function loadPrizes() {
   if (p['uy-prize'])  document.getElementById('uy-prize').value  = p['uy-prize'];
   if (p['br-code'])   document.getElementById('br-code').value   = p['br-code'];
   if (p['br-link'])   document.getElementById('br-link').value   = p['br-link'];
-  if (p['otro-code']) document.getElementById('otro-code').value = p['otro-code'];
+  if (p['otro-pct'])  document.getElementById('otro-pct').value  = p['otro-pct'];
+  if (p['otro-link']) document.getElementById('otro-link').value = p['otro-link'];
   if (p['otro-link']) document.getElementById('otro-link').value = p['otro-link'];
 }
 
@@ -709,7 +710,8 @@ function savePrizes() {
     'uy-prize':  document.getElementById('uy-prize').value,
     'br-code':   document.getElementById('br-code').value,
     'br-link':   document.getElementById('br-link').value,
-    'otro-code': document.getElementById('otro-code').value,
+    'otro-pct':  document.getElementById('otro-pct').value,
+    'otro-link': document.getElementById('otro-link').value,
     'otro-link': document.getElementById('otro-link').value
   };
   // Guardar localmente
